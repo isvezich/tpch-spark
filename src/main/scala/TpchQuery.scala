@@ -28,10 +28,13 @@ abstract class TpchQuery {
 object TpchQuery {
 
   def outputDF(df: DataFrame, outputDir: String, className: String): Unit = {
+    val cwd = System.getProperty("user.dir")
+
     if (outputDir == null || outputDir == "")
       df.collect().foreach(println)
     else {
       //df.write.mode("overwrite").json(outputDir + "/" + className + ".out") // json to avoid alias
+      df.queryExecution.executedPlan.toJSON.write.format("json").save(cwd + + "/" + "sparkPlan" + className)
       df.write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").save(outputDir + "/" + className)
     }
   }
