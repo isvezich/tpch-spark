@@ -1,5 +1,7 @@
 *.class
 *.log
+.idea/
+tpch_execution_times.txt
 
 # sbt specific
 .cache
@@ -11,6 +13,7 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
+project/
 
 # Scala-IDE specific
 .scala_dependencies
@@ -22,3 +25,4 @@ dbgen/*.tbl
 dbgen/*.o
 dbgen/dbgen
 dbgen/qgen
+dbgen/output/

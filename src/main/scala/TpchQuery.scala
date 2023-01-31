@@ -34,7 +34,11 @@ object TpchQuery {
       df.collect().foreach(println)
     else {
       //df.write.mode("overwrite").json(outputDir + "/" + className + ".out") // json to avoid alias
-      df.queryExecution.executedPlan.toJSON.write.format("json").save(cwd + + "/" + "sparkPlan" + className)
+
+      val physicalPlan = df.queryExecution.sparkPlan.toJSON
+//      physicalPlan.write.mode("overwrite").json(cwd + "/" + "sparkPlan" + className + ".json")
+      os.write(os.pwd/"sparkPlan.json", physicalPlan)
+
       df.write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").save(outputDir + "/" + className)
     }
   }
