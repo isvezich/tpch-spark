@@ -1,7 +1,13 @@
 *.class
 *.log
 .idea/
+
+# output
 tpch_execution_times.txt
+logicalPlan/
+sparkPlan/
+executedPlan/
+analyzedPlan/
 
 # sbt specific
 .cache

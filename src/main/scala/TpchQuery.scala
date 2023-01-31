@@ -1,7 +1,12 @@
 package main.scala
 
 import java.io.{BufferedWriter, File, FileWriter}
+import java.nio.file.{Files, Paths}
 import scala.collection.mutable.ListBuffer
+
+//import scala.io.{ File, Path }
+//import scala.tools.nsc.io
+
 import org.apache.log4j.LogManager
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -35,9 +40,15 @@ object TpchQuery {
     else {
       //df.write.mode("overwrite").json(outputDir + "/" + className + ".out") // json to avoid alias
 
-      val physicalPlan = df.queryExecution.sparkPlan.toJSON
-//      physicalPlan.write.mode("overwrite").json(cwd + "/" + "sparkPlan" + className + ".json")
-      os.write(os.pwd/"sparkPlan.json", physicalPlan)
+      val logicalPlan = df.queryExecution.logical.toJSON
+      val sparkPlan = df.queryExecution.sparkPlan.toJSON
+      val executedPlan = df.queryExecution.executedPlan.toJSON
+      val analyzedPlan = df.queryExecution.analyzed.toJSON
+
+      Files.write(Paths.get(cwd + "/logicalPlan/" + className + ".json"), logicalPlan.getBytes())
+      Files.write(Paths.get(cwd + "/sparkPlan/" + className + ".json"), sparkPlan.getBytes())
+      Files.write(Paths.get(cwd + "/executedPlan/" + className + ".json"), executedPlan.getBytes())
+      Files.write(Paths.get(cwd + "/analyzedPlan/" + className + ".json"), analyzedPlan.getBytes())
 
       df.write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").save(outputDir + "/" + className)
     }
